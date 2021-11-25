@@ -1,4 +1,5 @@
-let myVar = 10; 
+const div = document.getElementById('github');
 
-myVar = 20;
-console.log(myVar);
+const logged = () => {
+  console.log(div.textContent);
+};
