@@ -1,3 +1,4 @@
+'use strict';
 const div = document.getElementById('github');
 
 const logged = () => {
