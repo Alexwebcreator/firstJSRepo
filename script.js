@@ -1,10 +1,15 @@
-let title = 1;
-let screens = 2;
-let screenPrice = 3;
-let rollback = 4;
-let fullPrice = 5;
-let adaptive = 6;
+let title = "My first JS project";
+let screens = "Простые, Сложные, Интерактивные";
+let screenPrice = 5000;
+let rollback = 20;
+let fullPrice = 20000;
+let adaptive = true;
 
-alert("Example alert");
-
-console.log("Hello, everyone!");
+console.log(typeof title);
+console.log(typeof fullPrice);
+console.log(typeof adaptive);
+console.log(screens.length);
+console.log(`Стоимость верстки экранов ${screenPrice} рублей`);
+console.log(`Стоимость разработки сайта ${fullPrice} рублей`);
+console.log(screens.toLowerCase().split(" "));
+console.log(`Процент отката посреднику за работу ${fullPrice*(rollback/100)}`);
