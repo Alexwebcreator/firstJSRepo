@@ -1,30 +1,72 @@
 'use strict';
 
-const isNumber = function (num) {
-  return !isNaN(parseFloat(num)) && isFinite(num);
-};
-
 const appData = {
   title: '',
-  screens: '',
+  screens: [],
   screenPrice: 0,
   adaptive: true,
   allServicePrices: 0,
   fullPrice: 0,
   servicePercentPrice: 0,
-  service1: '',
-  service2: '',
+  services: {},
   rollback: 20,
-  asking: function() {
-    appData.title = prompt("Как называется ваш проект", "Калькулятор   верстки");
-    appData.screens = prompt("Какие типы экранов нужно разработать?",   "Простые, Сложные");
 
+  isNumber: function (num) {
+    return !isNaN(parseFloat(num)) && isFinite(num);
+  },
+
+  asking: function() {
     do {
-      appData.screenPrice = +prompt("Сколько будет стоить данная работа?");
-    } while(!isNumber(appData.screenPrice));
-  
+      appData.title = prompt("Как называется ваш проект");
+    } while (!isNaN(appData.title));
+
+    for (let i = 0; i < 2; i++) {
+      let name;
+      let price = 0;
+
+      do {
+        name = prompt("Какие типы экранов нужно разработать?");
+      } while (!isNaN(name));
+
+      do {
+        price = +prompt("Сколько будет стоить данная работа?");
+      } while(!appData.isNumber(price));
+
+      appData.screens.push({id: i, name: name, price: price});
+
+    }
+
+    for (let i = 0; i < 2; i++) {
+      let name;
+      let price = 0;
+
+      do {
+        name = prompt("Какой дополнительный тип услуг нужен?");
+      } while (!isNaN(name));
+
+      do {
+        price = prompt('Сколько это будет стоить?');
+      } while (!appData.isNumber(price));
+
+      if (name in appData.services) {
+        appData.services[name + i] = price;
+      } else {
+        appData.services[name] = price;
+      }
+
+      appData.services[name] = +price;
+    }
 
     appData.adaptive = confirm("Нужен ли адаптив на сайте?");
+
+  },
+
+  addPrices: function() {
+    appData.screenPrice = appData.screens.reduce((sum, screen) => sum + screen.price, 0);
+
+    for(let key in appData.services) {
+      appData.allServicePrices += appData.services[key];
+    }
   },
 
   getRollbackMessage: function(price) {
@@ -37,57 +79,34 @@ const appData = {
     } else {
       return "Что-то пошло не так";
     }
-  },
-
-  getAllServicePrices: function() {
-    let sum = 0;
-
-    for (let i = 0; i < 2; i++) {
-      let price = 0;
-
-      if (i === 0) {
-        appData.service1 = prompt("Какой дополнительный тип услуг   нужен?");
-      } else if (i === 1) {
-        appData.service2 = prompt("Какой дополнительный тип услуг   нужен?");
-      }
-      do {
-        price = prompt('Сколько это будет стоить?');
-      } while (!isNumber(price));
-      sum += +price;
-    }
-
-    return sum;
-  
   }, 
 
   getFullPrice: function() {
-    return +appData.screenPrice + appData.allServicePrices;
+    appData.fullPrice = +appData.screenPrice + appData.allServicePrices;
   },
 
   getTitle: function () {
-    return appData.title.trim()[0].toUpperCase() + appData.title. trim().substring(1).toLowerCase();
+    appData.title = appData.title.trim()[0].toUpperCase() + appData.title. trim().substring(1).toLowerCase();
   },
 
   getServicePercentPrice: function() {
-    return appData.fullPrice - (appData.fullPrice*(appData.  rollback/100));
+    appData.servicePercentPrice = appData.fullPrice - (appData.fullPrice*(appData.rollback/100));
   },
 
 
   start() {
     appData.asking();
-    appData.allServicePrices = appData.    getAllServicePrices();
-    appData.fullPrice = appData.getFullPrice    ();
-    appData.servicePercentPrice = appData.    getServicePercentPrice();
-    appData.title = appData.getTitle();
+    appData.addPrices();
+    appData.getFullPrice();
+    appData.getServicePercentPrice();
+    appData.getTitle();
     appData.logger();
   },
 
   logger() {
-    for (const key in appData) {
-      if (typeof appData[key] !== 'function') {
-        console.log(`${key}: ${appData[key]}`);
-      }
-    }
+    console.log(appData.fullPrice);
+    console.log(appData.servicePercentPrice);
+    console.log(appData.screens);
   }
 
 };
